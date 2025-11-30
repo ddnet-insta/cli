@@ -3,7 +3,7 @@
 Gem::Specification.new do |s|
   s.name        = 'ddnet_insta_cli'
   s.version     = '0.0.1'
-  # TODO: name not unique enuf??
+  # TODO: name not unique enough??
   # s.executables = %w[cli]
   s.summary     = 'ddnet-insta C++ code gen tool'
   s.description = <<-DESC
