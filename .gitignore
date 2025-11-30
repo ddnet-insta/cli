@@ -1,0 +1,4 @@
+# TODO: remove this is create fake src dir in here
+#       so i can test fs stuff and cli args
+#       i think this should be done differently smh
+src
