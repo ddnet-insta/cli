@@ -1,11 +1,11 @@
-require "fileutils"
+require 'fileutils'
 
-require_relative "strings"
+require_relative 'strings'
 
 # comments use YARD format
 # https://rubydoc.info/gems/yard/file/docs/GettingStarted.md
 
-CONTROLLER_BASE_DIR_INCLUDE = "game/server/gamemodes"
+CONTROLLER_BASE_DIR_INCLUDE = 'game/server/gamemodes'
 CONTROLLER_BASE_DIR_FS = "src/#{CONTROLLER_BASE_DIR_INCLUDE}"
 
 class Controller
@@ -15,16 +15,16 @@ class Controller
 
   def initialize(opts = {})
     # relative path from CONTROLLER_BASE_DIR_FS
-    @path = opts[:path] || ["instagib"]
+    @path = opts[:path] || ['instagib']
     raise "Path has to be an array! Got #{@path.class} #{@path} instead" unless @path.is_a?(Array)
 
     # class name
     @name = opts[:name].to_camel
-    raise "Name can not be empty!" if @name.empty?
+    raise 'Name can not be empty!' if @name.empty?
 
     # [String] filename base without extension
     @filename = opts[:filename].to_snake
-    raise "Filename can not be empty!" if @filename.nil? || @filename.empty?
+    raise 'Filename can not be empty!' if @filename.nil? || @filename.empty?
     raise "Invalid filename: #{@filename}" if @filename.include? '.'
   end
 
@@ -98,10 +98,10 @@ class FileSystemHelper
     return true unless File.exist? path
 
     puts "[!] the following file already exists #{path}"
-    puts "[!] do you really want to overwrite it? (y/N)"
+    puts '[!] do you really want to overwrite it? (y/N)'
     return true if $stdin.gets.chomp.match?(/[Yy](es)?/)
 
-    puts "[!] skipping file ..."
+    puts '[!] skipping file ...'
     false
   end
 end
@@ -139,17 +139,17 @@ class Gamemode
   def gen_cpp_header
     [
       include_guard_open,
-      "",
+      '',
       "#include <#{@parent_controller.include_path_abs}>",
-      "",
+      '',
       "class #{@controller.class_name} : public #{@parent_controller.class_name}",
-      "{",
-      "public:",
+      '{',
+      'public:',
       "	#{@controller.class_name}(CGameContext *pGameServer);",
       "	~#{@controller.class_name}() override;",
-      "",
+      '',
       header_methods,
-      "};",
+      '};',
       include_guard_close
     ].join("\n") + "\n"
   end
@@ -158,19 +158,19 @@ class Gamemode
   def gen_cpp_source
     [
       "#include \"#{@controller.header_filename}\"",
-      "",
-      "#include <game/server/entities/character.h>",
-      "#include <game/server/gamecontext.h>",
-      "#include <game/server/player.h>",
-      "",
+      '',
+      '#include <game/server/entities/character.h>',
+      '#include <game/server/gamecontext.h>',
+      '#include <game/server/player.h>',
+      '',
       "#{@controller.class_name}::#{@controller.class_name}(CGameContext *pGameServer) :",
       "	#{@parent_controller.class_name}(pGameServer)",
-      "{",
+      '{',
       constructor_body,
-      "}",
-      "",
+      '}',
+      '',
       "#{@controller.class_name}::~#{@controller.class_name}() = default;",
-      "",
+      '',
       source_methods,
       "REGISTER_GAMEMODE(#{@controller.name_snake}, #{@controller.class_name}(pGameServer));"
     ].join("\n") + "\n"
@@ -189,16 +189,16 @@ class Gamemode
 
   def constructor_body
     [
-      "// if you do not need team red/blue or the red and blue flag from ctf",
-      "// just do m_GameFlags = 0;",
-      "m_GameFlags = GAMEFLAG_TEAMS | GAMEFLAG_FLAGS;",
+      '// if you do not need team red/blue or the red and blue flag from ctf',
+      '// just do m_GameFlags = 0;',
+      'm_GameFlags = GAMEFLAG_TEAMS | GAMEFLAG_FLAGS;',
       "m_pGameType = \"#{@controller.name_snake}\";",
-      "m_DefaultWeapon = WEAPON_GUN;",
-      "",
+      'm_DefaultWeapon = WEAPON_GUN;',
+      '',
       "m_pStatsTable = \"#{@controller.name_snake}\";",
       "m_pExtraColumns = nullptr; // new C#{@controller.name}Columns();",
-      "m_pSqlStats->SetExtraColumns(m_pExtraColumns);",
-      "m_pSqlStats->CreateTable(m_pStatsTable);"
+      'm_pSqlStats->SetExtraColumns(m_pExtraColumns);',
+      'm_pSqlStats->CreateTable(m_pStatsTable);'
     ].map { |m| "\t#{m}" }.join("\n")
   end
 
@@ -213,7 +213,7 @@ class Gamemode
   end
 
   def include_guard_close
-    "#endif"
+    '#endif'
   end
 
   def source_methods
@@ -223,31 +223,31 @@ class Gamemode
     #       and these signatures should be fetched from the source code
     #       not hardcodet in here
     [
-      "// TODO: add methods here, but they should be dynamic",
-      "",
+      '// TODO: add methods here, but they should be dynamic',
+      '',
       "void #{@controller.class_name}::OnInit()",
-      empty_method_body("void"),
+      empty_method_body('void'),
       "int #{@controller.class_name}::OnCharacterDeath(CCharacter *pVictim, class CPlayer *pKiller, int Weapon)",
-      empty_method_body("int")
+      empty_method_body('int')
     ].join("\n")
   end
 
   def empty_method_body(return_type)
-    lines = ["{"]
+    lines = ['{']
     case return_type
-    when "void" then nil
-    when "int" then lines << "	return 0;"
+    when 'void' then nil
+    when 'int' then lines << "\treturn 0;"
     else raise "Unknown return type: #{return_type}"
     end
-    lines << "}"
-    lines << ""
+    lines << '}'
+    lines << ''
     lines
   end
 
   def header_methods
     [
-      "void OnInit() override;",
-      "int OnCharacterDeath(class CCharacter *pVictim, CPlayer *pKiller, int Weapon) override;"
+      'void OnInit() override;',
+      'int OnCharacterDeath(class CCharacter *pVictim, CPlayer *pKiller, int Weapon) override;'
     ].map { |m| "\t#{m}" }.join("\n")
   end
 end

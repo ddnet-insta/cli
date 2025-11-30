@@ -19,10 +19,10 @@ class Cli
   end
 
   def show_help
-    puts "usage: cli [controller_name]"
-    puts "description:"
-    puts "  generates the source and header file"
-    puts "  for the controller"
+    puts 'usage: cli [controller_name]'
+    puts 'description:'
+    puts '  generates the source and header file'
+    puts '  for the controller'
   end
 
   ## TODO: add unit tests once the args are finalized
@@ -33,7 +33,7 @@ class Cli
       arg = args.shift
 
       case arg
-      when "h", "-h", "--help", "help", "bruder was", "???", "?"
+      when 'h', '-h', '--help', 'help', 'bruder was', '???', '?'
         show_help
         exit 0
       when /^--/
@@ -43,7 +43,7 @@ class Cli
       else
         raise "Unexpected argument '#{arg}'" unless @args[:name].nil?
 
-        puts "set name"
+        puts 'set name'
         @args[:name] = arg
       end
     end
@@ -52,7 +52,7 @@ class Cli
   end
 
   def validate_args
-    raise "Controller name can not be empty" if @args[:name].nil? || @args[:name].empty?
+    raise 'Controller name can not be empty' if @args[:name].nil? || @args[:name].empty?
   end
 end
 
