@@ -14,9 +14,10 @@ class Cli
       name: @args[:name]
     )
     # puts mode.gen_cpp_header
+    # puts mode.gen_cpp_source
 
-    puts mode.write_cpp_header
-    puts mode.write_cpp_source
+    mode.write_cpp_header
+    mode.write_cpp_source
   end
 
   def show_help
