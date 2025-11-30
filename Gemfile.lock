@@ -1,0 +1,37 @@
+PATH
+  remote: .
+  specs:
+    ddnet_insta_cli (0.0.1)
+      fileutils (~> 1.6.0)
+      os (~> 1.0.1)
+      rspec (~> 3.9.0)
+
+GEM
+  remote: https://rubygems.org/
+  specs:
+    diff-lcs (1.6.2)
+    fileutils (1.6.0)
+    os (1.0.1)
+    rspec (3.9.0)
+      rspec-core (~> 3.9.0)
+      rspec-expectations (~> 3.9.0)
+      rspec-mocks (~> 3.9.0)
+    rspec-core (3.9.3)
+      rspec-support (~> 3.9.3)
+    rspec-expectations (3.9.4)
+      diff-lcs (>= 1.2.0, < 2.0)
+      rspec-support (~> 3.9.0)
+    rspec-mocks (3.9.1)
+      diff-lcs (>= 1.2.0, < 2.0)
+      rspec-support (~> 3.9.0)
+    rspec-support (3.9.4)
+
+PLATFORMS
+  ruby
+  x86_64-linux
+
+DEPENDENCIES
+  ddnet_insta_cli!
+
+BUNDLED WITH
+   2.6.4
