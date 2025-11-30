@@ -86,7 +86,7 @@ end
 # what u gonna do
 class FileSystemHelper
   # Writes to file with an interactive warning
-  # befor overwriting an old file
+  # before overwriting an old file
   #
   # does not create base path
   #
