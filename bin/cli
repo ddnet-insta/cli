@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 
-require_relative "ddnet-insta-cli/lib/strings"
+require_relative "../lib/strings"
 
 # comments use YARD format
 # https://rubydoc.info/gems/yard/file/docs/GettingStarted.md
