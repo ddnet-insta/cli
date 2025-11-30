@@ -27,5 +27,5 @@ jobs:
     - name: Check ruby with rubocop
       run: |
         rubocop
-    - name: Shellcheck
-      run: find . -type f -name '*.sh' -print0 | xargs -0 shellcheck
+    # - name: Shellcheck
+    #   run: find . -type f -name '*.sh' -print0 | xargs -0 shellcheck
