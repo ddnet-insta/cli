@@ -7,7 +7,8 @@ require_relative "strings"
 # comments use YARD format
 # https://rubydoc.info/gems/yard/file/docs/GettingStarted.md
 
-CONTROLLER_BASE_DIR = "src/game/server/gamemodes"
+CONTROLLER_BASE_DIR_INCLUDE = "game/server/gamemodes"
+CONTROLLER_BASE_DIR_FS = "src/#{CONTROLLER_BASE_DIR_INCLUDE}"
 
 class Controller
   @@pvp_controller = nil
@@ -15,8 +16,9 @@ class Controller
   attr_reader :path
 
   def initialize(opts = {})
-    # relative path from CONTROLLER_BASE_DIR
+    # relative path from CONTROLLER_BASE_DIR_FS
     @path = opts[:path] || ["instagib"]
+    raise "Path has to be an array! Got #{@path.class} #{@path} instead" unless @path.is_a?(Array)
 
     # class name
     @name = opts[:name].to_camel
@@ -43,12 +45,16 @@ class Controller
 
   # @return [String] controller header filename
   def header_filename
-    "#{name_snake}.h"
+    "#{@filename}.h"
   end
 
   # @return [String] controller cpp source filename
   def source_filename
-    "#{name_snake}.cpp"
+    "#{@filename}.cpp"
+  end
+
+  def include_path_abs
+    "#{CONTROLLER_BASE_DIR_INCLUDE}/#{@path.join('/')}/#{header_filename}"
   end
 
   def self.pvp
@@ -58,7 +64,7 @@ class Controller
     #       change the C++ code so we can do convention
     #       over configuration
     @@pvp_controller = Controller.new(
-      path: 'base_pvp',
+      path: ['base_pvp'],
       name: 'pvp',
       filename: 'base_pvp',
     )
@@ -137,7 +143,7 @@ class Gamemode
     [
       include_guard_open,
       "",
-      '#include "../base_pvp/base_pvp.h"',
+      "#include <#{@parent_controller.include_path_abs}>",
       "",
       "class #{@controller.class_name} : public #{@parent_controller.class_name}",
       "{",
@@ -169,7 +175,6 @@ class Gamemode
       "#{@controller.class_name}::~#{@controller.class_name}() = default;",
       "",
       source_methods,
-      "",
       "REGISTER_GAMEMODE(#{@controller.name_snake}, #{@controller.class_name}(pGameServer));"
     ].join("\n") + "\n"
   end
@@ -177,10 +182,10 @@ class Gamemode
   private
 
   def fs_create_base_dir
-    raise "Missing directory: #{CONTROLLER_BASE_DIR}" unless Dir.exist? CONTROLLER_BASE_DIR
+    raise "Missing directory: #{CONTROLLER_BASE_DIR_FS}" unless Dir.exist? CONTROLLER_BASE_DIR_FS
 
     # create directory
-    dir = "#{CONTROLLER_BASE_DIR}/#{@controller.path.join('/')}"
+    dir = "#{CONTROLLER_BASE_DIR_FS}/#{@controller.path.join('/')}"
     FileUtils.mkdir_p dir
     dir
   end
@@ -190,11 +195,11 @@ class Gamemode
       "// if you do not need team red/blue or the red and blue flag from ctf",
       "// just do m_GameFlags = 0;",
       "m_GameFlags = GAMEFLAG_TEAMS | GAMEFLAG_FLAGS;",
-      "m_pGameType = \"#{@controller.name_snake}\"",
+      "m_pGameType = \"#{@controller.name_snake}\";",
       "m_DefaultWeapon = WEAPON_GUN;",
       "",
-      "m_pStatsTable = \"#{@controller.name_snake}\"",
-      "m_pExtraColumns = new C#{@controller.name}Columns();",
+      "m_pStatsTable = \"#{@controller.name_snake}\";",
+      "m_pExtraColumns = nullptr; // new C#{@controller.name}Columns();",
       "m_pSqlStats->SetExtraColumns(m_pExtraColumns);",
       "m_pSqlStats->CreateTable(m_pStatsTable);",
     ].map { |m| "\t#{m}" }.join("\n")
@@ -222,14 +227,31 @@ class Gamemode
     #       and these signatures should be fetched from the source code
     #       not hardcodet in here
     [
-      "// TODO: add methods here, but they should be dynamic"
+      "// TODO: add methods here, but they should be dynamic",
+      "",
+      "void #{@controller.class_name}::OnInit()",
+      empty_method_body("void"),
+      "int #{@controller.class_name}::OnCharacterDeath(CCharacter *pVictim, class CPlayer *pKiller, int Weapon)",
+      empty_method_body("int"),
     ].join("\n")
+  end
+
+  def empty_method_body(return_type)
+    lines = ["{"]
+    case return_type
+      when "void" then nil
+      when "int" then lines << "	return 0;"
+      else raise "Unknown return type: #{return_type}"
+    end
+    lines << "}"
+    lines << ""
+    lines
   end
 
   def header_methods
     [
-      "void OnInit() override",
-      "int OnCharacterDeath(class CCharacter *pVictim, class CPlayer *pKiller, int Weapon) override;",
+      "void OnInit() override;",
+      "int OnCharacterDeath(class CCharacter *pVictim, CPlayer *pKiller, int Weapon) override;",
     ].map { |m| "\t#{m}" }.join("\n")
   end
 end
@@ -239,6 +261,8 @@ class Cli
     mode = Gamemode.new(
       name: 'placeholder'
     )
+    # puts mode.gen_cpp_header
+
     puts mode.write_cpp_header
     puts mode.write_cpp_source
   end
