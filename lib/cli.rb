@@ -19,6 +19,10 @@ class Cli
   end
 
   def show_help
+    puts "usage: cli [controller_name]"
+    puts "description:"
+    puts "  generates the source and header file"
+    puts "  for the controller"
   end
 
   ## TODO: add unit tests once the args are finalized
