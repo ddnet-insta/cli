@@ -100,7 +100,7 @@ class FileSystemHelper
 
     puts "[!] the following file already exists #{path}"
     puts "[!] do you really want to overwrite it? (y/N)"
-    return true if gets.chomp.match? /[Yy](es)?/
+    return true if $stdin.gets.chomp.match? /[Yy](es)?/
 
     puts "[!] skipping file ..."
     false
