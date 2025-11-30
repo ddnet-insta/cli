@@ -33,3 +33,8 @@ Metrics/ParameterLists:
 Lint/DuplicateBranch:
   Enabled: false
 
+Style/StringConcatenation:
+  Enabled: false
+
+Style/Documentation:
+  Enabled: false
