@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'fileutils'
 
 require_relative 'strings'
@@ -6,7 +8,7 @@ require_relative 'strings'
 # https://rubydoc.info/gems/yard/file/docs/GettingStarted.md
 
 CONTROLLER_BASE_DIR_INCLUDE = 'game/server/gamemodes'
-CONTROLLER_BASE_DIR_FS = "src/#{CONTROLLER_BASE_DIR_INCLUDE}"
+CONTROLLER_BASE_DIR_FS = "src/#{CONTROLLER_BASE_DIR_INCLUDE}".freeze
 
 class Controller
   @pvp_controller = nil
