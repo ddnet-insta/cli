@@ -9,7 +9,7 @@ CONTROLLER_BASE_DIR_INCLUDE = "game/server/gamemodes"
 CONTROLLER_BASE_DIR_FS = "src/#{CONTROLLER_BASE_DIR_INCLUDE}"
 
 class Controller
-  @@pvp_controller = nil
+  @pvp_controller = nil
 
   attr_reader :path
 
@@ -54,12 +54,12 @@ class Controller
   end
 
   def self.pvp
-    return @@pvp_controller if @@pvp_controller
+    return @pvp_controller if @pvp_controller
 
     # TODO: omg all these values are so close!!!
     #       change the C++ code so we can do convention
     #       over configuration
-    @@pvp_controller = Controller.new(
+    @pvp_controller = Controller.new(
       path: ['base_pvp'],
       name: 'pvp',
       filename: 'base_pvp'
