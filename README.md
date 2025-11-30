@@ -1,7 +1,6 @@
 # cli
 
-A command line tool written in ruby (who is she? a stripper?).
-
+A command line tool written in ruby.
 That is supposed to help with boiler plate code in the [ddnet-insta](https://github.com/ddnet-insta/ddnet-insta) project.
 
 
