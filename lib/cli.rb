@@ -56,4 +56,4 @@ class Cli
   end
 end
 
-cli = Cli.new(ARGV)
+Cli.new(ARGV)

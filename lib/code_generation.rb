@@ -29,9 +29,7 @@ class Controller
   end
 
   # camel cased name
-  def name
-    @name
-  end
+  attr_reader :name
 
   def class_name
     "CGameController#{@name}"
@@ -64,7 +62,7 @@ class Controller
     @@pvp_controller = Controller.new(
       path: ['base_pvp'],
       name: 'pvp',
-      filename: 'base_pvp',
+      filename: 'base_pvp'
     )
   end
 
@@ -73,7 +71,7 @@ class Controller
   def self.list
     {
       pvp: {
-        controller: self.pvp,
+        controller: pvp,
         description: 'Basic pvp controller. Top recommendation!'
       }
     }
@@ -92,6 +90,7 @@ class FileSystemHelper
   # @param text [String] text to be written to file
   def write(path, text)
     return unless ok_to_overwrite? path
+
     File.write(path, text)
   end
 
@@ -100,7 +99,7 @@ class FileSystemHelper
 
     puts "[!] the following file already exists #{path}"
     puts "[!] do you really want to overwrite it? (y/N)"
-    return true if $stdin.gets.chomp.match? /[Yy](es)?/
+    return true if $stdin.gets.chomp.match?(/[Yy](es)?/)
 
     puts "[!] skipping file ..."
     false
@@ -199,7 +198,7 @@ class Gamemode
       "m_pStatsTable = \"#{@controller.name_snake}\";",
       "m_pExtraColumns = nullptr; // new C#{@controller.name}Columns();",
       "m_pSqlStats->SetExtraColumns(m_pExtraColumns);",
-      "m_pSqlStats->CreateTable(m_pStatsTable);",
+      "m_pSqlStats->CreateTable(m_pStatsTable);"
     ].map { |m| "\t#{m}" }.join("\n")
   end
 
@@ -209,14 +208,13 @@ class Gamemode
     slug += @controller.name.to_snake.upcase
     [
       "#ifndef GAME_SERVER_GAMEMODES_#{slug}_H",
-      "#define GAME_SERVER_GAMEMODES_#{slug}_H",
+      "#define GAME_SERVER_GAMEMODES_#{slug}_H"
     ].join("\n")
   end
 
   def include_guard_close
     "#endif"
   end
-
 
   def source_methods
     # TODO: the header and source methods should be be kept in sync with some kind of data structure
@@ -230,16 +228,16 @@ class Gamemode
       "void #{@controller.class_name}::OnInit()",
       empty_method_body("void"),
       "int #{@controller.class_name}::OnCharacterDeath(CCharacter *pVictim, class CPlayer *pKiller, int Weapon)",
-      empty_method_body("int"),
+      empty_method_body("int")
     ].join("\n")
   end
 
   def empty_method_body(return_type)
     lines = ["{"]
     case return_type
-      when "void" then nil
-      when "int" then lines << "	return 0;"
-      else raise "Unknown return type: #{return_type}"
+    when "void" then nil
+    when "int" then lines << "	return 0;"
+    else raise "Unknown return type: #{return_type}"
     end
     lines << "}"
     lines << ""
@@ -249,7 +247,7 @@ class Gamemode
   def header_methods
     [
       "void OnInit() override;",
-      "int OnCharacterDeath(class CCharacter *pVictim, CPlayer *pKiller, int Weapon) override;",
+      "int OnCharacterDeath(class CCharacter *pVictim, CPlayer *pKiller, int Weapon) override;"
     ].map { |m| "\t#{m}" }.join("\n")
   end
 end
