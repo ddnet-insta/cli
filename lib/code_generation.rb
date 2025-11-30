@@ -3,6 +3,7 @@
 require 'fileutils'
 
 require_relative 'strings'
+require_relative 'colors'
 
 # comments use YARD format
 # https://rubydoc.info/gems/yard/file/docs/GettingStarted.md
@@ -94,6 +95,7 @@ class FileSystemHelper
     return unless ok_to_overwrite? path
 
     File.write(path, text)
+    puts "[*] created file #{path.green}"
   end
 
   def ok_to_overwrite?(path)
