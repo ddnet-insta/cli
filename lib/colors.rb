@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Source - https://stackoverflow.com/a
 # Posted by Erik Skoglund, modified by community. See post 'Timeline' for change history
 # Retrieved 2025-11-30, License - CC BY-SA 3.0
