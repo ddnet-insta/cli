@@ -44,7 +44,6 @@ class Cli
       else
         raise "Unexpected argument '#{arg}'" unless @args[:name].nil?
 
-        puts 'set name'
         @args[:name] = arg
       end
     end
