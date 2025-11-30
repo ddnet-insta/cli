@@ -1,9 +1,13 @@
 #!/usr/bin/env ruby
 
+require "fileutils"
+
 require_relative "strings"
 
 # comments use YARD format
 # https://rubydoc.info/gems/yard/file/docs/GettingStarted.md
+
+CONTROLLER_BASE_DIR = "src/game/server/gamemodes"
 
 class Controller
   @@pvp_controller = nil
@@ -11,8 +15,7 @@ class Controller
   attr_reader :path
 
   def initialize(opts = {})
-    # relative path from
-    # src/game/server/gamemodes/
+    # relative path from CONTROLLER_BASE_DIR
     @path = opts[:path] || ["instagib"]
 
     # class name
@@ -73,6 +76,33 @@ class Controller
   end
 end
 
+# yes yes horrible class name
+# what u gonna do
+class FileSystemHelper
+  # Writes to file with an interactive warning
+  # befor overwriting an old file
+  #
+  # does not create base path
+  #
+  # @param path [String] file path to write to
+  # @param text [String] text to be written to file
+  def write(path, text)
+    return unless ok_to_overwrite? path
+    File.write(path, text)
+  end
+
+  def ok_to_overwrite?(path)
+    return true unless File.exist? path
+
+    puts "[!] the following file already exists #{path}"
+    puts "[!] do you really want to overwrite it? (y/N)"
+    return true if gets.chomp.match? /[Yy](es)?/
+
+    puts "[!] skipping file ..."
+    false
+  end
+end
+
 class Gamemode
   def initialize(opts = {})
     opts[:filename] = opts[:name] if opts[:filename].nil?
@@ -80,6 +110,26 @@ class Gamemode
 
     # camel name of parent controller
     @parent_controller = Controller.pvp
+
+    @fs = FileSystemHelper.new
+  end
+
+  def write_cpp_header
+    # create folder
+    dir = fs_create_base_dir
+
+    # create file
+    path = "#{dir}/#{@controller.header_filename}"
+    @fs.write(path, gen_cpp_header)
+  end
+
+  def write_cpp_source
+    # create folder
+    dir = fs_create_base_dir
+
+    # create file
+    path = "#{dir}/#{@controller.source_filename}"
+    @fs.write(path, gen_cpp_source)
   end
 
   # @return [String] gamemode.h C++ source code
@@ -125,6 +175,15 @@ class Gamemode
   end
 
   private
+
+  def fs_create_base_dir
+    raise "Missing directory: #{CONTROLLER_BASE_DIR}" unless Dir.exist? CONTROLLER_BASE_DIR
+
+    # create directory
+    dir = "#{CONTROLLER_BASE_DIR}/#{@controller.path.join('/')}"
+    FileUtils.mkdir_p dir
+    dir
+  end
 
   def constructor_body
     [
@@ -180,7 +239,8 @@ class Cli
     mode = Gamemode.new(
       name: 'placeholder'
     )
-    puts mode.gen_cpp_source
+    puts mode.write_cpp_header
+    puts mode.write_cpp_source
   end
 end
 
