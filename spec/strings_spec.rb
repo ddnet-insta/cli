@@ -20,5 +20,12 @@ describe 'String', :array do
       expect('hello_world'.to_camel).to eq('HelloWorld')
       expect('hello'.to_camel).to eq('Hello')
     end
+    it 'Should detect snake case' do
+      expect('HelloWorld'.lower_snake_case?).to eq(false)
+      expect('helloW'.lower_snake_case?).to eq(false)
+      expect('HellO__'.lower_snake_case?).to eq(false)
+      expect('hello'.lower_snake_case?).to eq(true)
+      expect('hello_world'.lower_snake_case?).to eq(true)
+    end
   end
 end

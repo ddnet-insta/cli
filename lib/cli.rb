@@ -139,9 +139,19 @@ class Cli
     end
   end
 
+  def gets_snake_case
+    loop do
+      print '> '
+      val = $stdin.gets.chomp
+      return val if val.lower_snake_case?
+
+      puts 'Value has to be lower_snake_caase. Please try again.'
+    end
+  end
+
   def fetch_args_interactive
     puts 'Choose your controller name (use lower_snake_case)'
-    @args[:name] = gets_non_empty
+    @args[:name] = gets_snake_case
 
     puts 'Choose your parent controller'
     # passing parent as a string if we already have an object is hacky

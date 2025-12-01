@@ -16,6 +16,10 @@ class String
     self
   end
 
+  def lower_snake_case?
+    match?(/^[a-z_]+$/)
+  end
+
   def to_snake
     return self if match?(/_/)
 
