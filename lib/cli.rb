@@ -13,16 +13,12 @@ class Cli
 
   def run
     parent = Controller.base_pvp
-
-    # # interactive picker is not polished yet but works
-    # # there should also be a non interactive version
-    # # by passing like controller_name:parent_name as cli arg
-    # parent = pick_item(Controller.parents).value
-
     if @args[:parent]
-      parent = item_by_name(Controller.parents, @args[:parent]).value
+      parent = item_by_name(Controller.parents, @args[:parent])
       options = Controller.parents.map(&:name).join(', ')
       raise "Parent controller '#{@args[:parent]}' not found. Options: #{options}" if parent.nil?
+
+      parent = parent.value
     end
 
     mode = Gamemode.new(
@@ -55,8 +51,7 @@ class Cli
       items.each_with_index do |item, idx|
         puts "#{idx}. #{item.name} - #{item.description}"
       end
-      print '> '
-      choice = $stdin.gets.to_i
+      choice = gets_number
       item = items[choice]
       return item unless item.nil?
 
@@ -98,11 +93,36 @@ class Cli
       end
     end
 
-    validate_args
+    fetch_args_interactive if @args[:name].nil?
   end
 
-  def validate_args
-    raise 'Controller name can not be empty' if @args[:name].nil? || @args[:name].empty?
+  def gets_non_empty
+    loop do
+      print '> '
+      val = $stdin.gets.chomp
+      return val unless val.empty?
+
+      puts 'Value can not be empty. Please try again.'
+    end
+  end
+
+  def gets_number
+    loop do
+      print '> '
+      val = $stdin.gets.chomp
+      return val.to_i if val.match?(/^\d+$/)
+
+      puts 'Please provide a valid number'
+    end
+  end
+
+  def fetch_args_interactive
+    puts 'Choose your controller name'
+    @args[:name] = gets_non_empty
+
+    puts 'Choose your parent controller'
+    # passing parent as a string if we already have an object is hacky
+    @args[:parent] = pick_item(Controller.parents).value.name.to_snake
   end
 end
 
