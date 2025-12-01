@@ -25,6 +25,7 @@ class Controller
     # class name
     raise 'Name can not be empty!' if opts[:name].empty?
     raise 'Name can not start with an underscore!' if opts[:name].start_with?('_')
+
     @name = opts[:name].to_camel
 
     # [String] filename base without extension
@@ -95,7 +96,7 @@ class FileSystemHelper
   # @param text [String] text to be written to file
   #
   # @return [true, false] true if written
-  def write(path, text)
+  def write?(path, text)
     return false unless ok_to_overwrite? path
 
     File.write(path, text)
@@ -133,7 +134,7 @@ class Gamemode
 
     # create file
     path = "#{dir}/#{@controller.header_filename}"
-    return unless @fs.write(path, gen_cpp_header)
+    return unless @fs.write?(path, gen_cpp_header)
 
     @cmake.add_file(path)
   end
@@ -144,7 +145,7 @@ class Gamemode
 
     # create file
     path = "#{dir}/#{@controller.source_filename}"
-    return unless @fs.write(path, gen_cpp_source)
+    return unless @fs.write?(path, gen_cpp_source)
 
     @cmake.add_file(path)
   end
