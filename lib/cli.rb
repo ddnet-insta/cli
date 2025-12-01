@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 # frozen_string_literal: true
 
-require_relative 'code_generation'
+require_relative 'gamemode'
 
 class Cli
   def initialize(args)
