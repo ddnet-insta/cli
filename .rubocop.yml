@@ -41,3 +41,8 @@ Style/Documentation:
 
 Naming/HeredocDelimiterNaming:
   Enabled: false
+
+# could enable this but i somehow get syntax errors
+# in neovim idk maybe i did something wrong
+Style/HashSyntax:
+  Enabled: false
