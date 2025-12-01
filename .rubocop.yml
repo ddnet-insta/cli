@@ -38,3 +38,6 @@ Style/StringConcatenation:
 
 Style/Documentation:
   Enabled: false
+
+Naming/HeredocDelimiterNaming:
+  Enabled: false
