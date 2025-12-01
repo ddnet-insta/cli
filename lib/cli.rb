@@ -9,13 +9,21 @@ class Cli
     # helps "gets"
     # https://stackoverflow.com/a/2166914
     ARGV.clear
+  end
 
+  def run
     parent = Controller.base_pvp
 
     # # interactive picker is not polished yet but works
     # # there should also be a non interactive version
     # # by passing like controller_name:parent_name as cli arg
     # parent = pick_item(Controller.parents).value
+
+    if @args[:parent]
+      parent = item_by_name(Controller.parents, @args[:parent]).value
+      options = Controller.parents.map(&:name).join(', ')
+      raise "Parent controller '#{@args[:parent]}' not found. Options: #{options}" if parent.nil?
+    end
 
     mode = Gamemode.new(
       name: @args[:name],
@@ -56,6 +64,11 @@ class Cli
     end
   end
 
+  # TODO: move these item methods to the item.rb file? idk
+  def item_by_name(items, name)
+    items.find { |item| item.name == name }
+  end
+
   ## TODO: add unit tests once the args are finalized
   def parse_args(args)
     @args = {}
@@ -74,7 +87,14 @@ class Cli
       else
         raise "Unexpected argument '#{arg}'" unless @args[:name].nil?
 
-        @args[:name] = arg
+        name = arg
+        if name.include?(':')
+          parts = name.split(':')
+          @args[:name] = parts.shift
+          @args[:parent] = parts.join(':')
+        else
+          @args[:name] = name
+        end
       end
     end
 
@@ -86,4 +106,4 @@ class Cli
   end
 end
 
-Cli.new(ARGV)
+Cli.new(ARGV).run
