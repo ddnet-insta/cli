@@ -4,28 +4,22 @@ require 'fileutils'
 
 require_relative '../lib/cmake_patcher'
 
+SIMPLE_CMAKE_CONTENT = <<~EOF
+  if(SERVER)
+    set_src(GAME_SERVER GLOB_RECURSE src/game/server
+      gamemodes/vanilla/dm/dm.cpp
+    )
+  endif()
+EOF
+
 describe 'CMakePatcher', :array do
   context 'simple' do
     it 'Should not modify' do
-      input_cmake = <<~EOF
-        if(SERVER)
-          set_src(GAME_SERVER GLOB_RECURSE src/game/server
-            gamemodes/vanilla/dm/dm.cpp
-          )
-        endif()
-      EOF
-      expected_cmake = <<~EOF
-        if(SERVER)
-          set_src(GAME_SERVER GLOB_RECURSE src/game/server
-            gamemodes/vanilla/dm/dm.cpp
-          )
-        endif()
-      EOF
-      patcher = CMakePatcher.new(content: input_cmake)
-      expect(patcher.build_new_cmake).to eq(expected_cmake)
+      patcher = CMakePatcher.new(content: SIMPLE_CMAKE_CONTENT)
+      expect(patcher.build_new_cmake).to eq(SIMPLE_CMAKE_CONTENT)
     end
     it 'Should sort correctly' do
-      patcher = CMakePatcher.new
+      patcher = CMakePatcher.new(content: SIMPLE_CMAKE_CONTENT)
       sorted_files = [
         'gamemodes/instagib/%0xpanic.cpp',
         'gamemodes/instagib/%0xpanic.h',
