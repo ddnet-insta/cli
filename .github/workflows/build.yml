@@ -115,13 +115,6 @@ jobs:
         rustup default stable-x86_64-pc-windows-gnu
         rustup set default-host x86_64-pc-windows-gnu
 
-    - name: Install lib-crash
-      run: |
-          # temporary hack to patch CMakeLists.txt for the build
-          # because I cba to rewrite that in ruby right now
-          git clone https://github.com/lib-crash/lib-teeworlds ~/lib-teeworlds
-          echo ~/lib-teeworlds/bin >> $GITHUB_PATH
-
     - name: Build in debug mode
       run: |
         git clone --recursive https://github.com/ddnet-insta/ddnet-insta
