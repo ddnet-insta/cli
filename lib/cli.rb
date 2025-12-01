@@ -10,8 +10,16 @@ class Cli
     # https://stackoverflow.com/a/2166914
     ARGV.clear
 
+    parent = Controller.base_pvp
+
+    # # interactive picker is not polished yet but works
+    # # there should also be a non interactive version
+    # # by passing like controller_name:parent_name as cli arg
+    # parent = pick_item(Controller.parents).value
+
     mode = Gamemode.new(
-      name: @args[:name]
+      name: @args[:name],
+      parent: parent
     )
     # puts mode.gen_cpp_header
     # puts mode.gen_cpp_source
@@ -26,6 +34,26 @@ class Cli
     puts 'description:'
     puts '  generates the source and header file'
     puts '  for the controller'
+  end
+
+  # Interactive menu to pick an item
+  #
+  # @param items [Array<Item>] list of item instances to choose from
+  # @return [Item] selected item
+  def pick_item(items)
+    # TODO: add fuzzy search and arrow key navigation
+
+    loop do
+      items.each_with_index do |item, idx|
+        puts "#{idx}. #{item.name} - #{item.description}"
+      end
+      print '> '
+      choice = $stdin.gets.to_i
+      item = items[choice]
+      return item unless item.nil?
+
+      puts 'Invalid index!'
+    end
   end
 
   ## TODO: add unit tests once the args are finalized

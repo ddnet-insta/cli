@@ -5,6 +5,7 @@ require 'fileutils'
 require_relative 'strings'
 require_relative 'colors'
 require_relative 'cmake_patcher'
+require_relative 'item'
 
 # comments use YARD format
 # https://rubydoc.info/gems/yard/file/docs/GettingStarted.md
@@ -13,7 +14,8 @@ CONTROLLER_BASE_DIR_INCLUDE = 'game/server/gamemodes'
 CONTROLLER_BASE_DIR_FS = "src/#{CONTROLLER_BASE_DIR_INCLUDE}".freeze
 
 class Controller
-  @pvp_controller = nil
+  @base_pvp_controller = nil
+  @insta_core_controller = nil
 
   attr_reader :path
 
@@ -62,23 +64,39 @@ class Controller
     "#{CONTROLLER_BASE_DIR_INCLUDE}/#{@path.join('/')}/#{header_filename}"
   end
 
-  def self.pvp
-    return @pvp_controller if @pvp_controller
+  def self.base_pvp
+    return @base_pvp_controller if @base_pvp_controller
 
-    @pvp_controller = Controller.new(
+    @base_pvp_controller = Controller.new(
       name: 'base_pvp'
     )
   end
 
-  # TODO: create user facing dropdown with this
-  #       so we can pick a parent controller
-  def self.list
-    {
-      pvp: {
-        controller: pvp,
+  def self.insta_core
+    return @insta_core_controller if @insta_core_controller
+
+    @insta_core_controller = Controller.new(
+      name: 'insta_core'
+    )
+  end
+
+  # @return [Array<Item>]
+  def self.parents
+    [
+      Item.new(
+        name: 'base_pvp',
+        value: base_pvp,
         description: 'Basic pvp controller. Top recommendation!'
-      }
-    }
+      ),
+      Item.new(
+        name: 'insta_core',
+        value: insta_core,
+        description: "
+          Most minimal controller implementing only basic ddnet-insta,
+          might be missing essential features. Only for advanced users.
+        ".squeeze(' ').gsub("\n", '')
+      )
+    ]
   end
 end
 
@@ -120,7 +138,7 @@ class Gamemode
     @controller = Controller.new(opts)
 
     # camel name of parent controller
-    @parent_controller = Controller.pvp
+    @parent_controller = opts[:parent] || Controller.base_pvp
 
     @fs = FileSystemHelper.new
     @cmake = CMakePatcher.new
