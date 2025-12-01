@@ -140,7 +140,7 @@ class Cli
   end
 
   def fetch_args_interactive
-    puts 'Choose your controller name'
+    puts 'Choose your controller name (use lower_snake_case)'
     @args[:name] = gets_non_empty
 
     puts 'Choose your parent controller'
