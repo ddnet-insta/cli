@@ -38,10 +38,13 @@ class Cli
   end
 
   def show_help
-    puts 'usage: cli [controller_name]'
+    puts 'usage: ./scripts/cli [controller_name][:parent_controller]'
     puts 'description:'
     puts '  generates the source and header file'
     puts '  for the controller'
+    puts 'examples:'
+    puts '  ./scripts/cli zombie_party:base_pvp'
+    puts '  ./scripts/cli my_new_mode:insta_core'
   end
 
   # Interactive menu to pick an item
