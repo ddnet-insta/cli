@@ -1,14 +1,14 @@
+# frozen_string_literal: true
+
 class CMakePatcher
-  SERVER_PREFIX = "src/game/server"
+  SERVER_PREFIX = 'src/game/server'
 
   def initialize(opts = {})
     @cmake_path = opts[:path]
     @cmake_content = opts[:content]
 
-    @cmake_path = "CMakeLists.txt" if @cmake_content.nil? && @cmake_path.nil?
-    unless @cmake_path.nil?
-      raise "cmake file not found: #{@cmake_path}" unless File.exist? @cmake_path
-    end
+    @cmake_path = 'CMakeLists.txt' if @cmake_content.nil? && @cmake_path.nil?
+    raise "cmake file not found: #{@cmake_path}" if !@cmake_path.nil? && !File.exist?(@cmake_path)
 
     @new_files = []
   end
@@ -19,14 +19,16 @@ class CMakePatcher
   #
   # @param path [String] path to controller file starting with src/
   def add_file(path)
-    raise "Path has to start with #{SERVER_PREFIX}/gamemodes invalid path: #{path}" unless path.start_with? "#{SERVER_PREFIX}/gamemodes"
+    unless path.start_with? "#{SERVER_PREFIX}/gamemodes"
+      raise "Path has to start with #{SERVER_PREFIX}/gamemodes invalid path: #{path}"
+    end
 
     @new_files << path
   end
 
   # writes to disk
   def save
-    raise "CMakePatcher can not save if there is no :path give!" if @cmake_path.nil?
+    raise 'CMakePatcher can not save if there is no :path give!' if @cmake_path.nil?
 
     File.write(@cmake_path, build_new_cmake)
   end
@@ -35,14 +37,14 @@ class CMakePatcher
   #
   # @return [String] with CMakeLists.txt file content
   def build_new_cmake
-    new_content = ""
+    new_content = ''
     in_set_src = false
 
     old_files = []
 
     content.split("\n").each do |line|
       if in_set_src
-        if line.include?(")")
+        if line.include?(')')
           in_set_src = false
           new_content += build_files_string(old_files)
           new_content += "\n"
@@ -53,9 +55,7 @@ class CMakePatcher
       end
 
       #   set_src(GAME_SERVER GLOB_RECURSE src/game/server
-      if line.match? /set_src.GAME_SERVER.*src.game.server/
-        in_set_src = true
-      end
+      in_set_src = true if line.match?(/set_src.GAME_SERVER.*src.game.server/)
 
       new_content += "#{line}\n"
     end
@@ -78,7 +78,7 @@ class CMakePatcher
     # once we support reverting actions
     new_files = sort_files(old_files + new_files)
     new_files.map do |file|
-      spaces = " " * indent
+      spaces = ' ' * indent
       "#{spaces}#{file}"
     end.join("\n")
   end

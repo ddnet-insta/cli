@@ -132,9 +132,9 @@ class Gamemode
 
     # create file
     path = "#{dir}/#{@controller.header_filename}"
-    if @fs.write(path, gen_cpp_header)
-      @cmake.add_file(path)
-    end
+    return unless @fs.write(path, gen_cpp_header)
+
+    @cmake.add_file(path)
   end
 
   def write_cpp_source
@@ -143,13 +143,13 @@ class Gamemode
 
     # create file
     path = "#{dir}/#{@controller.source_filename}"
-    if @fs.write(path, gen_cpp_source)
-      @cmake.add_file(path)
-    end
+    return unless @fs.write(path, gen_cpp_source)
+
+    @cmake.add_file(path)
   end
 
   def write_cmake
-    puts "[*] adding files to #{"CMakeLists.txt".green}"
+    puts "[*] adding files to #{'CMakeLists.txt'.green}"
     @cmake.save
   end
 
