@@ -18,6 +18,7 @@ class Cli
 
     mode.write_cpp_header
     mode.write_cpp_source
+    mode.write_cmake
   end
 
   def show_help

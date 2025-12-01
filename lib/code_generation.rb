@@ -4,6 +4,7 @@ require 'fileutils'
 
 require_relative 'strings'
 require_relative 'colors'
+require_relative 'cmake_patcher'
 
 # comments use YARD format
 # https://rubydoc.info/gems/yard/file/docs/GettingStarted.md
@@ -91,11 +92,14 @@ class FileSystemHelper
   #
   # @param path [String] file path to write to
   # @param text [String] text to be written to file
+  #
+  # @return [true, false] true if written
   def write(path, text)
-    return unless ok_to_overwrite? path
+    return false unless ok_to_overwrite? path
 
     File.write(path, text)
     puts "[*] created file #{path.green}"
+    true
   end
 
   def ok_to_overwrite?(path)
@@ -119,6 +123,7 @@ class Gamemode
     @parent_controller = Controller.pvp
 
     @fs = FileSystemHelper.new
+    @cmake = CMakePatcher.new
   end
 
   def write_cpp_header
@@ -127,7 +132,9 @@ class Gamemode
 
     # create file
     path = "#{dir}/#{@controller.header_filename}"
-    @fs.write(path, gen_cpp_header)
+    if @fs.write(path, gen_cpp_header)
+      @cmake.add_file(path)
+    end
   end
 
   def write_cpp_source
@@ -136,7 +143,14 @@ class Gamemode
 
     # create file
     path = "#{dir}/#{@controller.source_filename}"
-    @fs.write(path, gen_cpp_source)
+    if @fs.write(path, gen_cpp_source)
+      @cmake.add_file(path)
+    end
+  end
+
+  def write_cmake
+    puts "[*] adding files to #{"CMakeLists.txt".green}"
+    @cmake.save
   end
 
   # @return [String] gamemode.h C++ source code
