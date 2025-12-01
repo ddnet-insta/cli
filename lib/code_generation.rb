@@ -62,13 +62,8 @@ class Controller
   def self.pvp
     return @pvp_controller if @pvp_controller
 
-    # TODO: omg all these values are so close!!!
-    #       change the C++ code so we can do convention
-    #       over configuration
     @pvp_controller = Controller.new(
-      path: ['base_pvp'],
-      name: 'pvp',
-      filename: 'base_pvp'
+      name: 'base_pvp'
     )
   end
 
