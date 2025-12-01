@@ -18,20 +18,23 @@ class Controller
   attr_reader :path
 
   def initialize(opts = {})
+    # class name
+    @name = opts[:name]
+    raise 'Name can not be empty!' if @name.empty?
+    raise 'Name can not start with an underscore!' if @name.start_with?('_')
+
+    @name = @name.to_camel
+
     # relative path from CONTROLLER_BASE_DIR_FS
-    @path = opts[:path] || ['instagib']
+    @path = opts[:path] || opts[:name].split('/')
     raise "Path has to be an array! Got #{@path.class} #{@path} instead" unless @path.is_a?(Array)
 
-    # class name
-    raise 'Name can not be empty!' if opts[:name].empty?
-    raise 'Name can not start with an underscore!' if opts[:name].start_with?('_')
-
-    @name = opts[:name].to_camel
-
     # [String] filename base without extension
-    @filename = opts[:filename].to_snake
+    @filename = opts[:filename] || opts[:name]
     raise 'Filename can not be empty!' if @filename.nil? || @filename.empty?
     raise "Invalid filename: #{@filename}" if @filename.include? '.'
+
+    @filename = @filename.to_snake
   end
 
   # camel cased name
