@@ -23,8 +23,9 @@ class Controller
     raise "Path has to be an array! Got #{@path.class} #{@path} instead" unless @path.is_a?(Array)
 
     # class name
+    raise 'Name can not be empty!' if opts[:name].empty?
+    raise 'Name can not start with an underscore!' if opts[:name].start_with?('_')
     @name = opts[:name].to_camel
-    raise 'Name can not be empty!' if @name.empty?
 
     # [String] filename base without extension
     @filename = opts[:filename].to_snake
