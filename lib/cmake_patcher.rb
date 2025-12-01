@@ -90,8 +90,6 @@ class CMakePatcher
   # @param files [Array<String>]
   # @return [Array<String>]
   def sort_files(files)
-    # TODO: does this really match the cmake sorter?
-    #       test the edge cases
     files.sort
   end
 

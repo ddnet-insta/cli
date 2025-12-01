@@ -24,6 +24,21 @@ describe 'CMakePatcher', :array do
       patcher = CMakePatcher.new(content: input_cmake)
       expect(patcher.build_new_cmake).to eq(expected_cmake)
     end
+    it 'Should sort correctly' do
+      patcher = CMakePatcher.new
+      sorted_files = [
+        'gamemodes/instagib/%0xpanic.cpp',
+        'gamemodes/instagib/%0xpanic.h',
+        'gamemodes/instagib/0xpanic.cpp',
+        'gamemodes/instagib/0xpanic.h',
+        'gamemodes/instagib/_0xpanic.cpp',
+        'gamemodes/instagib/_0xpanic.h',
+        'gamemodes/instagib/apanic.cpp',
+        'gamemodes/instagib/apanic.h',
+        'gamemodes/instagib/base_fng.cpp'
+      ]
+      expect(patcher.send(:sort_files, sorted_files)).to eq(sorted_files)
+    end
     it 'Should add mymod.cpp' do
       input_cmake = <<~EOF
         if(SERVER)
