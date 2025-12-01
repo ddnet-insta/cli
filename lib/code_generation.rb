@@ -84,6 +84,7 @@ class Controller
   def self.parents
     [
       Item.new(
+        default: true,
         name: 'base_pvp',
         value: base_pvp,
         description: 'Basic pvp controller. Top recommendation!'

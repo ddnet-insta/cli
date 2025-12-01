@@ -19,6 +19,10 @@ class Cli
       raise "Parent controller '#{@args[:parent]}' not found. Options: #{options}" if parent.nil?
 
       parent = parent.value
+    else
+      puts 'Choose your parent controller'
+      # passing parent as a string if we already have an object is hacky
+      @args[:parent] = pick_item(Controller.parents).value.name.to_snake
     end
 
     mode = Gamemode.new(
@@ -49,9 +53,25 @@ class Cli
 
     loop do
       items.each_with_index do |item, idx|
-        puts "#{idx}. #{item.name} - #{item.description}"
+        default_note = item.default? ? ' (default)' : ''
+        puts "#{idx}. #{item.name}#{default_note} - #{item.description}"
       end
-      choice = gets_number
+
+      choice = nil
+      default_item = items.find(&:default?)
+      if default_item
+        print '> '
+        val = $stdin.gets.chomp
+        unless val.match?(/^\d+$/)
+          puts "Defaulted to #{default_item.name}"
+          return default_item
+        end
+
+        choice = val
+      else
+        choice = gets_number
+      end
+
       item = items[choice]
       return item unless item.nil?
 

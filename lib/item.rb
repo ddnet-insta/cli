@@ -9,5 +9,10 @@ class Item
     @value = opts[:value]
     @name = opts[:name]
     @description = opts[:description]
+    @default = opts[:default] || false
+  end
+
+  def default?
+    @default
   end
 end
