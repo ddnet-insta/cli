@@ -62,6 +62,10 @@ class Controller
     "#{CONTROLLER_BASE_DIR_INCLUDE}/#{@path.join('/')}/#{header_filename}"
   end
 
+  def include_sql_path_abs
+    "#{CONTROLLER_BASE_DIR_INCLUDE}/#{@path.join('/')}/sql_columns.h"
+  end
+
   def self.base_pvp
     return @base_pvp_controller if @base_pvp_controller
 

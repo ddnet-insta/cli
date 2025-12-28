@@ -53,6 +53,8 @@ class Gamemode
       '',
       "#include <#{@parent_controller.include_path_abs}>",
       '',
+      header_sql,
+      '',
       "class #{@controller.class_name} : public #{@parent_controller.class_name}",
       '{',
       'public:',
@@ -160,5 +162,16 @@ class Gamemode
       'void OnInit() override;',
       'int OnCharacterDeath(class CCharacter *pVictim, CPlayer *pKiller, int Weapon) override;'
     ].map { |m| "\t#{m}" }.join("\n")
+  end
+
+  def header_sql
+    [
+      '// uncomment the lines below if you bring your own sql_columns.h file',
+      '// this is optional and only needed if your gamemode needs additional',
+      '// columns in the sql database.',
+      "// #define SQL_COLUMN_FILE <#{@controller.include_sql_path_abs}>",
+      "// #define SQL_COLUMN_CLASS C#{@controller.name}Columns",
+      '// #include <game/server/instagib/column_template.h>'
+    ].join("\n")
   end
 end
