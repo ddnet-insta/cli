@@ -70,7 +70,7 @@ class Cli
           return default_item
         end
 
-        choice = val
+        choice = val.to_i
       else
         choice = gets_number
       end
