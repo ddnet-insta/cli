@@ -33,6 +33,7 @@ class Controller
     @filename = opts[:filename] || opts[:name]
     raise 'Filename can not be empty!' if @filename.nil? || @filename.empty?
     raise "Invalid filename: #{@filename}" if @filename.include? '.'
+    @filename = @filename.split("/").first
 
     @filename = @filename.to_snake
   end

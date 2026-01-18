@@ -42,9 +42,15 @@ class Cli
     puts 'description:'
     puts '  generates the source and header file'
     puts '  for the controller'
+    puts 'parameters:'
+    puts '  controller_name - the controller name cane be prefixed with a path'
+    puts '                    common prefixes are ddrace/, ball/, instagib/, vanilla/'
+    puts '                    they represent categories and are directories in the source code'
+    puts '  parent_controller - controller to inherit from'
     puts 'examples:'
     puts '  ./scripts/cli zombie_party:base_pvp'
     puts '  ./scripts/cli my_new_mode:insta_core'
+    puts '  ./scripts/cli ddrace/xxlddrace:insta_core'
   end
 
   # Interactive menu to pick an item
