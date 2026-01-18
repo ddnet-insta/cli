@@ -22,6 +22,7 @@ class Controller
     @name = opts[:name]
     raise 'Name can not be empty!' if @name.empty?
     raise 'Name can not start with an underscore!' if @name.start_with?('_')
+    @name = @name.split("/").last
 
     @name = @name.to_camel
 
