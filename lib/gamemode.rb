@@ -16,7 +16,7 @@ class Gamemode
     @parent_controller = opts[:parent] || Controller.base_pvp
 
     @fs = FileSystemHelper.new
-    @cmake = CMakePatcher.new
+    @cmake = CMakePatcher.new(path: 'src/insta/CMakeLists.txt')
   end
 
   def write_cpp_header

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class CMakePatcher
-  SERVER_PREFIX = 'src/game/server'
+  SERVER_PREFIX = 'src/insta/server'
 
   def initialize(opts = {})
     @cmake_path = opts[:path]
@@ -54,8 +54,8 @@ class CMakePatcher
         end
       end
 
-      #   set_src(GAME_SERVER GLOB_RECURSE src/game/server
-      in_set_src = true if line.match?(/set_src.GAME_SERVER.*src.game.server/)
+      #   set_src(INSTA_SERVER GLOB_RECURSE src/insta/server
+      in_set_src = true if line.match?(/set_src.INSTA_SERVER.*src.insta.server/)
 
       new_content += "#{line}\n"
     end
@@ -71,7 +71,7 @@ class CMakePatcher
   # @param old_files [Array<String>] The files currently in CMakeListst.txt
   # @param indent [Integer] Amount of spaces to indent from the beginning of the line
   # @return [Array<String>]
-  def build_files_string(old_files, indent = 4)
+  def build_files_string(old_files, indent = 6)
     old_files = old_files.map(&:strip)
     new_files = @new_files.map { |file| file.delete_prefix("#{SERVER_PREFIX}/") }
     # could also delete files here

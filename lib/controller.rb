@@ -8,7 +8,7 @@ require_relative 'item'
 # comments use YARD format
 # https://rubydoc.info/gems/yard/file/docs/GettingStarted.md
 
-CONTROLLER_BASE_DIR_INCLUDE = 'game/server/gamemodes'
+CONTROLLER_BASE_DIR_INCLUDE = 'insta/server/gamemodes'
 CONTROLLER_BASE_DIR_FS = "src/#{CONTROLLER_BASE_DIR_INCLUDE}".freeze
 
 class Controller
