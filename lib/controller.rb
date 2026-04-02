@@ -22,7 +22,8 @@ class Controller
     @name = opts[:name]
     raise 'Name can not be empty!' if @name.empty?
     raise 'Name can not start with an underscore!' if @name.start_with?('_')
-    @name = @name.split("/").last
+
+    @name = @name.split('/').last
 
     @name = @name.to_camel
 
@@ -34,7 +35,8 @@ class Controller
     @filename = opts[:filename] || opts[:name]
     raise 'Filename can not be empty!' if @filename.nil? || @filename.empty?
     raise "Invalid filename: #{@filename}" if @filename.include? '.'
-    @filename = @filename.split("/").first
+
+    @filename = @filename.split('/').first
 
     @filename = @filename.to_snake
   end
