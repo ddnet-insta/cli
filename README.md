@@ -17,8 +17,8 @@ Go to your [ddnet-insta](https://github.com/ddnet-insta/ddnet-insta) source code
 This will create the following output
 
 ```
-[*] created file src/game/server/gamemodes/battle_gores/battle_gores.h
-[*] created file src/game/server/gamemodes/battle_gores/battle_gores.cpp
+[*] created file src/insta/server/gamemodes/battle_gores/battle_gores.h
+[*] created file src/insta/server/gamemodes/battle_gores/battle_gores.cpp
 [*] adding files to CMakeLists.txt
 ```
 
