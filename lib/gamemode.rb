@@ -16,7 +16,8 @@ class Gamemode
     @parent_controller = opts[:parent] || Controller.base_pvp
 
     @fs = FileSystemHelper.new
-    @cmake = CMakePatcher.new(path: 'src/insta/CMakeLists.txt')
+    cmake_path = opts[:cmake_path] || 'src/insta/CMakeLists.txt'
+    @cmake = CMakePatcher.new(path: cmake_path)
   end
 
   def write_cpp_header
@@ -140,6 +141,15 @@ class Gamemode
       '',
       "void #{@controller.class_name}::OnInit()",
       empty_method_body('void'),
+      "void #{@controller.class_name}::OnCharacterSpawn(CCharacter *pChr)",
+      '{',
+      "\t#{@parent_controller.class_name}::OnCharacterSpawn(pChr);",
+      '',
+      "\t// give default weapons",
+      "\tpChr->GiveWeapon(WEAPON_HAMMER, false, -1);",
+      "\tpChr->GiveWeapon(WEAPON_GUN, false, 10);",
+      '}',
+      '',
       "int #{@controller.class_name}::OnCharacterDeath(CCharacter *pVictim, class CPlayer *pKiller, int Weapon)",
       empty_method_body('int')
     ].join("\n")
@@ -160,6 +170,7 @@ class Gamemode
   def header_methods
     [
       'void OnInit() override;',
+      'void OnCharacterSpawn(class CCharacter *pChr) override;',
       'int OnCharacterDeath(class CCharacter *pVictim, CPlayer *pKiller, int Weapon) override;'
     ].map { |m| "\t#{m}" }.join("\n")
   end
