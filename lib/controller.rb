@@ -14,6 +14,7 @@ CONTROLLER_BASE_DIR_FS = "src/#{CONTROLLER_BASE_DIR_INCLUDE}".freeze
 class Controller
   @base_pvp_controller = nil
   @insta_core_controller = nil
+  @vanilla_dm_controller = nil
 
   attr_reader :path
 
@@ -25,7 +26,13 @@ class Controller
 
     @name = @name.split('/').last
 
+    # some names like the "DM" controller are special
+    # because they are full caps and a single word
+    # so we cant camel case them or split on capped letters
+    @single_cap_word_name = opts[:single_cap_word_name] || false
+
     @name = @name.to_camel
+    @name = @name.upcase if @single_cap_word_name
 
     # relative path from CONTROLLER_BASE_DIR_FS
     @path = opts[:path] || opts[:name].split('/')
@@ -38,7 +45,11 @@ class Controller
 
     @filename = @filename.split('/').first
 
-    @filename = @filename.to_snake
+    @filename = if @single_cap_word_name
+                  @filename.downcase
+                else
+                  @filename.to_snake
+                end
   end
 
   # camel cased name
@@ -49,6 +60,8 @@ class Controller
   end
 
   def name_snake
+    return @name.downcase if @single_cap_word_name
+
     @name.to_snake
   end
 
@@ -78,6 +91,16 @@ class Controller
     )
   end
 
+  def self.vanilla_dm
+    return @vanilla_dm_controller if @vanilla_dm_controller
+
+    @vanilla_dm_controller = Controller.new(
+      single_cap_word_name: true,
+      name: 'DM',
+      path: %w[vanilla dm]
+    )
+  end
+
   def self.insta_core
     return @insta_core_controller if @insta_core_controller
 
@@ -94,6 +117,12 @@ class Controller
         name: 'base_pvp',
         value: base_pvp,
         description: 'Basic pvp controller. Top recommendation!'
+      ),
+      Item.new(
+        name: 'vanilla_dm',
+        key: vanilla_dm.include_path_abs,
+        value: vanilla_dm,
+        description: 'The standard teeworlds gamemode deathmatch.'
       ),
       Item.new(
         name: 'insta_core',

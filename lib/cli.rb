@@ -14,7 +14,7 @@ class Cli
   def run
     parent = Controller.base_pvp
     if @args[:parent]
-      parent = item_by_name(Controller.parents, @args[:parent])
+      parent = Item.find(Controller.parents, @args[:parent])
       options = Controller.parents.map(&:name).join(', ')
       raise "Parent controller '#{@args[:parent]}' not found. Options: #{options}" if parent.nil?
 
@@ -49,6 +49,7 @@ class Cli
     puts '  parent_controller - controller to inherit from'
     puts 'examples:'
     puts '  ./scripts/cli zombie_party:base_pvp'
+    puts '  ./scripts/cli mmo:vanilla_dm'
     puts '  ./scripts/cli my_new_mode:insta_core'
     puts '  ./scripts/cli ddrace/xxlddrace:insta_core'
   end
@@ -86,11 +87,6 @@ class Cli
 
       puts 'Invalid index!'
     end
-  end
-
-  # TODO: move these item methods to the item.rb file? idk
-  def item_by_name(items, name)
-    items.find { |item| item.name == name }
   end
 
   ## TODO: add unit tests once the args are finalized
@@ -161,7 +157,7 @@ class Cli
 
     puts 'Choose your parent controller'
     # passing parent as a string if we already have an object is hacky
-    @args[:parent] = pick_item(Controller.parents).value.name.to_snake
+    @args[:parent] = pick_item(Controller.parents).key
   end
 end
 
