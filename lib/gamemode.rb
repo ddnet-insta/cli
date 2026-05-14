@@ -121,8 +121,8 @@ class Gamemode
     slug += '_' unless slug.empty?
     slug += @controller.name.to_snake.upcase
     [
-      "#ifndef GAME_SERVER_GAMEMODES_#{slug}_H",
-      "#define GAME_SERVER_GAMEMODES_#{slug}_H"
+      "#ifndef INSTA_SERVER_GAMEMODES_#{slug}_H",
+      "#define INSTA_SERVER_GAMEMODES_#{slug}_H"
     ].join("\n")
   end
 
