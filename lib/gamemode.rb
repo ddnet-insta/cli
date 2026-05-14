@@ -113,7 +113,7 @@ class Gamemode
       "m_pExtraColumns = nullptr; // new C#{@controller.name}Columns();",
       'm_pSqlStats->SetExtraColumns(m_pExtraColumns);',
       'm_pSqlStats->CreateTable(m_pStatsTable);'
-    ].map { |m| "\t#{m}" }.join("\n")
+    ].map { |m| m == "" ? "" : "\t#{m}" }.join("\n")
   end
 
   def include_guard_open
