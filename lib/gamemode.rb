@@ -111,8 +111,12 @@ class Gamemode
       '',
       "m_pStatsTable = \"#{@controller.name_snake}\";",
       "m_pExtraColumns = nullptr; // new C#{@controller.name}Columns();",
-      'm_pSqlStats->SetExtraColumns(m_pExtraColumns);',
-      'm_pSqlStats->CreateTable(m_pStatsTable);'
+      'Db()->Stats()->SetExtraColumns(m_pExtraColumns);',
+      'Db()->Stats()->CreateTable(m_pStatsTable);',
+      '',
+      '// activate additional accounts tables here',
+      '// first define the table in ddnet-nsta/datasrc/acc_tables/yourtable.py',
+      '// EnableAccTable(EExtraAccTable::YOUR_TABLE);'
     ].map { |m| m == '' ? '' : "\t#{m}" }.join("\n")
   end
 
