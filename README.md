@@ -11,7 +11,7 @@ This tool is heavily inspired by the [rails](https://github.com/rails/rails) cli
 Go to your [ddnet-insta](https://github.com/ddnet-insta/ddnet-insta) source code and run the following command:
 
 ```
-./scripts/cli battle_gores:base_pvp
+./scripts/cli generate controller battle_gores:base_pvp
 ```
 
 This will create the following output

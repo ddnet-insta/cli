@@ -2,16 +2,81 @@
 # frozen_string_literal: true
 
 require_relative 'gamemode'
+require_relative 'fork'
 
 class Cli
   def initialize(args)
-    parse_args(args)
+    @args_clone = args.map(&:clone)
     # helps "gets"
     # https://stackoverflow.com/a/2166914
     ARGV.clear
   end
 
   def run
+    if @args_clone.empty?
+      # interactive controller generation by default
+      parse_controller_args([])
+      exit 0
+    end
+
+    # TODO: i smh doubt rubocop is wrong here but cba to investigate
+    #       because the code does what i want
+    #
+    # rubocop:disable Lint/UnreachableLoop
+    until @args_clone.empty?
+      arg = @args_clone.shift
+
+      case arg
+      when 'h', '-h', '--help', 'help', 'bruder was', '???', '?'
+        show_help
+        exit 0
+      when 'g', 'generate'
+        res = @args_clone.shift
+        case res
+        when 'c', 'controller', 'mode', 'gamemode'
+          res_controller
+          exit 0
+        when 'f', 'fork'
+          res_fork
+          exit 0
+        else
+          puts "Unknown resource '#{res}'"
+          puts 'Possible options: controller, fork'
+          exit 1
+        end
+      else
+        puts "Unknown argument '#{arg}' see --help"
+        exit 1
+      end
+    end
+    # rubocop:enable Lint/UnreachableLoop
+  end
+
+  def res_fork
+    if @args_clone.empty?
+      puts 'Missing fork name'
+      exit 1
+    end
+    if @args_clone.length > 1
+      puts 'Too many arguments'
+      exit 1
+    end
+    name = @args_clone.first
+    generate_fork(name)
+  end
+
+  def res_controller
+    parse_controller_args(@args_clone)
+    generate_controller
+  end
+
+  def generate_fork(name)
+    puts "generating fork '#{name}'"
+    fork = Fork.new(name)
+    fork.create
+  end
+
+  def generate_controller
     parent = Controller.base_pvp
     if @args[:parent]
       parent = Item.find(Controller.parents, @args[:parent])
@@ -38,20 +103,26 @@ class Cli
   end
 
   def show_help
-    puts 'usage: ./scripts/cli [controller_name][:parent_controller]'
+    puts 'usage: ./scripts/cli generate [resource] [options]'
+    puts 'resources:'
+    puts ' controller'
+    puts ' fork'
     puts 'description:'
     puts '  generates the source and header file'
-    puts '  for the controller'
-    puts 'parameters:'
+    puts '  for a new controller or creates an entire fork'
+    puts 'controller parameters:'
     puts '  controller_name - the controller name cane be prefixed with a path'
     puts '                    common prefixes are ddrace/, ball/, instagib/, vanilla/'
     puts '                    they represent categories and are directories in the source code'
     puts '  parent_controller - controller to inherit from'
+    puts 'fork parameters:'
+    puts '  name - the name of the fork in lower_snake_case'
     puts 'examples:'
-    puts '  ./scripts/cli zombie_party:base_pvp'
-    puts '  ./scripts/cli mmo:vanilla_dm'
-    puts '  ./scripts/cli my_new_mode:insta_core'
-    puts '  ./scripts/cli ddrace/xxlddrace:insta_core'
+    puts '  ./scripts/cli g fork my_fork'
+    puts '  ./scripts/cli g controller zombie_party:base_pvp'
+    puts '  ./scripts/cli g controller mmo:vanilla_dm'
+    puts '  ./scripts/cli g controller my_new_mode:insta_core'
+    puts '  ./scripts/cli g controller ddrace/xxlddrace:insta_core'
   end
 
   # Interactive menu to pick an item
@@ -90,7 +161,7 @@ class Cli
   end
 
   ## TODO: add unit tests once the args are finalized
-  def parse_args(args)
+  def parse_controller_args(args)
     @args = {}
 
     until args.empty?

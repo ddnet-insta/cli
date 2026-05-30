@@ -11,6 +11,10 @@ class CMakePatcher
     raise "cmake file not found: #{@cmake_path}" if !@cmake_path.nil? && !File.exist?(@cmake_path)
 
     @new_files = []
+
+    # bit weird that this is an array xd
+    # we should really never create multiple forks at once but eh whatever
+    @forks = []
   end
 
   # add a new controller source or header path
@@ -24,6 +28,16 @@ class CMakePatcher
     end
 
     @new_files << path
+  end
+
+  # create a ddnet-insta fork that has a different name
+  # it will live in its own folder with its own CMakeLists.txt
+  # and the cmake patcher will include that new cmake file
+  # in the main cmake file in the right places
+  #
+  # @param name [String] name of the fork
+  def add_fork(name)
+    @forks << name
   end
 
   # writes to disk
@@ -43,6 +57,9 @@ class CMakePatcher
     old_files = []
 
     content.split("\n").each do |line|
+      ######################
+      # patch source lists #
+      ######################
       if in_set_src
         if line.include?(')')
           in_set_src = false
@@ -56,6 +73,30 @@ class CMakePatcher
 
       #   set_src(INSTA_SERVER GLOB_RECURSE src/insta/server
       in_set_src = true if line.match?(/set_src.INSTA_SERVER.*src.insta.server/)
+
+      ##############
+      # patch fork #
+      ##############
+      case line
+      when 'include("${CMAKE_CURRENT_SOURCE_DIR}/src/insta/CMakeLists.txt")'
+        new_content += "#{line}\n"
+        @forks.each do |fork|
+          new_content += 'include("${CMAKE_CURRENT_SOURCE_DIR}/src/' + fork + '/CMakeLists.txt")' + "\n"
+        end
+        next
+      when 'insta_patch_engine()'
+        new_content += "#{line}\n"
+        @forks.each do |fork|
+          new_content += "#{fork}_patch_engine()\n"
+        end
+        next
+      when '  insta_patch_server()'
+        new_content += "#{line}\n"
+        @forks.each do |fork|
+          new_content += "  #{fork}_patch_server()\n"
+        end
+        next
+      end
 
       new_content += "#{line}\n"
     end
