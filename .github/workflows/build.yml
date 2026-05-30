@@ -125,7 +125,7 @@ jobs:
       run: |
         git clone --recursive https://github.com/ddnet-insta/ddnet-insta
         cd ddnet-insta
-        ruby ../bin/cli my_snake_debug_mode:base_pvp
+        ruby ../bin/cli generate controller my_snake_debug_mode:base_pvp
         mkdir debug
         cd debug
         ${{ matrix.cmake-path }}cmake --version
