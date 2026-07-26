@@ -15,10 +15,10 @@ class Fork
   private
 
   def register_includes
-    patch_include('src/insta/includes/chat_commands.h', "#include <src/#{@name}/server/chat_commands.h>")
-    patch_include('src/insta/includes/rcon_commands.h', "#include <src/#{@name}/server/rcon_commands.h>")
+    patch_include('src/insta/includes/chat_commands.h', "#include <#{@name}/server/chat_commands.h>")
+    patch_include('src/insta/includes/rcon_commands.h', "#include <#{@name}/server/rcon_commands.h>")
     patch_include('src/insta/includes/engine/shared/config_variables.h',
-                  "#include <src/#{@name}/engine/shared/config_variables_#{@name}.h>")
+                  "#include <#{@name}/engine/shared/config_variables_#{@name}.h>")
   end
 
   def patch_include(path, line)
