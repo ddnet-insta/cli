@@ -136,9 +136,9 @@ jobs:
     - name: Build in release mode
       run: |
         cd ddnet-insta
-        ruby ../bin/cli MyCamelReleaseMode:base_pvp
+        ruby ../bin/cli g controller MyCamelReleaseMode:base_pvp
         # insta core does not compile because of the extra columns value
-        # ruby ../bin/cli another_custom_mode:insta_core
+        # ruby ../bin/cli g controller another_custom_mode:insta_core
         mkdir release
         cd release
         ${{ matrix.cmake-path }}cmake -E env ${{ matrix.cmake-init-env }} ${{ matrix.cmake-path }}cmake ${{ matrix.cmake-args }} -DCMAKE_BUILD_TYPE=Release -Werror=dev -DDOWNLOAD_GTEST=ON -DCMAKE_RUNTIME_OUTPUT_DIRECTORY_RELEASE=. -DCLIENT=OFF ..
