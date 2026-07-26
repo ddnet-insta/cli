@@ -115,7 +115,7 @@ class Gamemode
       'Db()->Stats()->CreateTable(m_pStatsTable);',
       '',
       '// activate additional accounts tables here',
-      '// first define the table in ddnet-nsta/datasrc/acc_tables/yourtable.py',
+      '// first define the table in ddnet-insta/datasrc/acc_tables/yourtable.py',
       '// EnableAccTable(EExtraAccTable::YOUR_TABLE);'
     ].map { |m| m == '' ? '' : "\t#{m}" }.join("\n")
   end
