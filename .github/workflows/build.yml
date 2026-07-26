@@ -65,7 +65,27 @@ jobs:
         sudo apt-get update -y
         # mount: /var/lib/grub/esp: special device /dev/disk/by-id/scsi-... does not exist.
         # sudo apt-get upgrade -y
-        sudo apt-get install pkg-config ninja-build libfreetype6-dev libnotify-dev libsdl2-dev libsqlite3-dev libavcodec-dev libavformat-dev libavutil-dev libswresample-dev libswscale-dev libx264-dev libpng-dev valgrind gcovr libglew-dev -y
+        packages=(
+          # tidy-alphabetical-start
+          gcovr
+          libavcodec-dev
+          libavformat-dev
+          libavutil-dev
+          libfreetype6-dev
+          libglew-dev
+          libnotify-dev
+          libpng-dev
+          libsdl2-dev
+          libsqlite3-dev
+          libswresample-dev
+          libswscale-dev
+          libx264-dev
+          ninja-build
+          pkg-config
+          valgrind
+          # tidy-alphabetical-end
+        )
+        sudo apt-get install -y "${packages[@]}"
 
     - name: Prepare Linux (non-fancy)
       if: contains(matrix.os, 'ubuntu') && !contains(matrix.name, 'fancy')
@@ -73,7 +93,7 @@ jobs:
         curl -LO https://github.com/Kitware/CMake/releases/download/v3.13.4/cmake-3.13.4-Linux-x86_64.tar.gz
         sudo tar --strip-components 1 -C /usr -xf cmake-3.13.4-Linux-x86_64.tar.gz
         # Our minimum supported Rust version (MSRV)
-        rustup default 1.63.0
+        rustup default 1.85.0
         sudo rm -rf /var/lib/mysql/ /var/run/mysqld
         sudo mkdir /var/lib/mysql/ /var/run/mysqld/
         sudo chown mysql:mysql /var/lib/mysql/ /var/run/mysqld/
