@@ -13,8 +13,9 @@ CONTROLLER_BASE_DIR_FS = "src/#{CONTROLLER_BASE_DIR_INCLUDE}".freeze
 
 class Controller
   @base_pvp_controller = nil
-  @insta_core_controller = nil
   @vanilla_dm_controller = nil
+  @base_instagib_controller = nil
+  @insta_core_controller = nil
 
   attr_reader :path
 
@@ -91,6 +92,15 @@ class Controller
     )
   end
 
+  def self.base_instagib
+    return @base_instagib_controller if @base_instagib_controller
+
+    @base_instagib_controller = Controller.new(
+      name: 'base_instagib',
+      path: %w[instagib]
+    )
+  end
+
   def self.vanilla_dm
     return @vanilla_dm_controller if @vanilla_dm_controller
 
@@ -123,6 +133,12 @@ class Controller
         key: vanilla_dm.include_path_abs,
         value: vanilla_dm,
         description: 'The standard teeworlds gamemode deathmatch.'
+      ),
+      Item.new(
+        default: true,
+        name: 'base_instagib',
+        value: base_instagib,
+        description: 'Basic instagib deathmatch foundation used for gdm, idm and solofng'
       ),
       Item.new(
         name: 'insta_core',
