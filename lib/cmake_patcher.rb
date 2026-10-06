@@ -115,9 +115,17 @@ class CMakePatcher
   def build_files_string(old_files, indent = 6)
     old_files = old_files.map(&:strip)
     new_files = @new_files.map { |file| file.delete_prefix("#{SERVER_PREFIX}/") }
+
+    # leave the last file of the old files last
+    # so we do not mess with the tidy start and tidy end comments
+    all_files = old_files
+    last_file = all_files.pop
+    all_files += new_files
+    all_files << last_file
+
     # could also delete files here
     # once we support reverting actions
-    new_files = sort_files(old_files + new_files)
+    new_files = sort_files(all_files)
     new_files.map do |file|
       spaces = ' ' * indent
       "#{spaces}#{file}"
@@ -136,8 +144,8 @@ class CMakePatcher
     end_comment = ""
     if files.first.include?('# tidy-alphabetical-start') && files.last.include?('# tidy-alphabetical-end')
       has_tidy_comments = true
-      start_comment = files.pop
-      end_comment = files.shift
+      start_comment = files.shift
+      end_comment = files.pop
     end
 
     files.sort!
