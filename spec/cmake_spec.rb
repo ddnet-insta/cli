@@ -33,6 +33,23 @@ describe 'CMakePatcher', :array do
       ]
       expect(patcher.send(:sort_files, sorted_files)).to eq(sorted_files)
     end
+    it 'Should sort with tidy comment correctly' do
+      patcher = CMakePatcher.new(content: SIMPLE_CMAKE_CONTENT)
+      sorted_files = [
+        '# tidy-alphabetical-start',
+        'gamemodes/instagib/%0xpanic.cpp',
+        'gamemodes/instagib/%0xpanic.h',
+        'gamemodes/instagib/0xpanic.cpp',
+        'gamemodes/instagib/0xpanic.h',
+        'gamemodes/instagib/_0xpanic.cpp',
+        'gamemodes/instagib/_0xpanic.h',
+        'gamemodes/instagib/apanic.cpp',
+        'gamemodes/instagib/apanic.h',
+        'gamemodes/instagib/base_fng.cpp',
+        '# tidy-alphabetical-end'
+      ]
+      expect(patcher.send(:sort_files, sorted_files)).to eq(sorted_files)
+    end
     it 'Should add mymod.cpp' do
       input_cmake = <<~EOF
         if(SERVER)
