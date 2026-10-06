@@ -140,8 +140,8 @@ class CMakePatcher
   # @return [Array<String>]
   def sort_files(files)
     has_tidy_comments = false
-    start_comment = ""
-    end_comment = ""
+    start_comment = ''
+    end_comment = ''
     if files.first.include?('# tidy-alphabetical-start') && files.last.include?('# tidy-alphabetical-end')
       has_tidy_comments = true
       start_comment = files.shift
