@@ -143,9 +143,9 @@ class Gamemode
     [
       '// TODO: add methods here, but they should be dynamic',
       '',
-      "void #{@controller.class_name}::OnInit()",
+      "void #{@controller.class_name}::OnInit(bool ServerStart)",
       '{',
-      "\t#{@parent_controller.class_name}::OnInit();",
+      "\t#{@parent_controller.class_name}::OnInit(ServerStart);",
       '}',
       '',
       "void #{@controller.class_name}::OnCharacterSpawn(CCharacter *pChr)",
@@ -176,7 +176,7 @@ class Gamemode
 
   def header_methods
     [
-      'void OnInit() override;',
+      'void OnInit(bool ServerStart) override;',
       'void OnCharacterSpawn(class CCharacter *pChr) override;',
       'int OnCharacterDeath(class CCharacter *pVictim, CPlayer *pKiller, int Weapon) override;'
     ].map { |m| "\t#{m}" }.join("\n")
